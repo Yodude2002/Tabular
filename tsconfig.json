@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "ES2015",
+    "moduleResolution": "bundler",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "alwaysStrict": true,
+    "sourceMap": true
+  },
+  "include": [
+    "background",
+    "side_panel"
+  ]
+}
