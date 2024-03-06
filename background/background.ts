@@ -7,7 +7,20 @@ chrome.runtime.onInstalled.addListener((_details) => {
 chrome.runtime.onConnect.addListener((port) => {
     if (port.sender?.id === chrome.runtime.id) {
         const windowId = parseInt(port.name);
+        
+        let tab = chrome.tabs.query({});
+        tab.then((a1) => {
+        
+            let s = new Array<string>(a1.length);
+            for(let i = 0; i < a1.length; i++) {
+                s[i] = a1[i].title;
+            }
+            port.postMessage(s);
+        
+    });
 
         port.postMessage({ message: "ack" } as S2CMessage)
     }
 })
+
+

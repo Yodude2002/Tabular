@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "minimum_chrome_version": "114",
   "permissions": [
-    "sidePanel"
+    "sidePanel", "tabs"
   ],
   "background": {
     "service_worker": "background/background.js",
