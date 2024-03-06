@@ -1,0 +1,17 @@
+.Background {
+background-color: black;
+}
+body {
+    background-color: grey;
+}
+.MainContainer {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 30px;
+    text-align: center;
+}
+.Tabs {
+    background-color: dodgerblue;
+    padding: 10px;
+    flex: 100%;
+}
