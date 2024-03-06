@@ -11,7 +11,8 @@ body {
     text-align: center;
 }
 .Tabs {
-    background-color: dodgerblue;
+    background-color: lightgreen;
     padding: 10px;
     flex: 100%;
+    border-radius: 5%;
 }
