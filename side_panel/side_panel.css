@@ -2,7 +2,7 @@
 background-color: black;
 }
 body {
-    background-color: rgb(95,95,95,1);;
+    background-color: rgb(40, 40, 40);;
 }
 .MainContainer {
     display: flex;
@@ -11,8 +11,14 @@ body {
     text-align: center;
 }
 .Tabs {
-    background-color: rgb(95,95,95,1);
+    background-color: rgba(60, 60, 60);
     padding: 10px;
     flex: 100%;
-    border-radius: 5%;
+    margin: 3px;
+    border-radius: 8px ;
+    color: white;
+
+}
+.white{
+    color: white;
 }
