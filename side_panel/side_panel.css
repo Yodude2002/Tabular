@@ -15,8 +15,11 @@ body {
     padding: 10px;
     flex: 100%;
     margin: 3px;
-    border-radius: 8px ;
+    overflow: hidden;
+    text-wrap: nowrap;
+    border-radius: 8px;
     color: white;
+    font-size: x-large;
 
 }
 .white{
