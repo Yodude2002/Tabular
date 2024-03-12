@@ -18,6 +18,15 @@ declare global {
             for(let i = 0; i < tabLength; i++){
                 addElement(message[i]);
             }
+        } else switch (message.message) {
+            case "state": {
+                for (const tab of message.tabs) {
+                    addElement(tab.title);
+                }
+                break;
+            }
+            case "ack": break;
+            default: throw new Error(`unhandled message type: ${message.message}`)
         }
     });
 })().catch(console.error);
