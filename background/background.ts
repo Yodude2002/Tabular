@@ -1,4 +1,4 @@
-
+import {S2CMessage} from "../common/protocol";
 
 chrome.runtime.onInstalled.addListener((_details) => {
     // on install

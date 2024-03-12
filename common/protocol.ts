@@ -1,5 +1,5 @@
 
-type Tab = {
+export type Tab = {
     tabId: number,
     parentId: number,
     windowId: number,
@@ -16,7 +16,7 @@ type Tab = {
     groupId: number,
 }
 
-type S2CMessage = S2CAckMessage
+export type S2CMessage = S2CAckMessage
     | S2CStateMessage
     | S2CInsertMessage
     | S2CRemoveMessage;
@@ -41,7 +41,7 @@ type S2CRemoveMessage = {
     tabId: number,
 }
 
-type C2SMessage = C2SConnectMessage;
+export type C2SMessage = C2SConnectMessage;
 
 type C2SConnectMessage = {
     message: "connect",
