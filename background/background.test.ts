@@ -108,12 +108,15 @@ test("dummy_test", () => {
 
 // Test 1: test receiving tabs
 test("query_tabs", async () => {
+    jest.restoreAllMocks();
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab()]);
     expect(await chrome.tabs.query({})).toStrictEqual([dummyChromeTab()]);
 })
 
-// Test 2.-1: test background receiving a message
+// Test 2: test background receiving a message
 test("query_connect", async () => {
+    jest.restoreAllMocks();
+    jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab()]);
 
     const port = mockPort();
     jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
@@ -123,13 +126,61 @@ test("query_connect", async () => {
     expect(port.postMessage).toHaveBeenCalledTimes(2);
     expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
     expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
-
 })
 
-// Test 2: test background receiving multiple messages
+// Test 3: test background receiving a message with multiple tabs
+test("query_connect_many", async () => {
+    jest.restoreAllMocks();
+    jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab(), dummyChromeTab(), dummyChromeTab()]);
 
-// Test 3: test tab translation
+    const port = mockPort();
+    jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
+    testExports.handleNewConnection(port);
 
-// Test 4: test sending a message, and receiving nothing back
+    await new Promise(process.nextTick);
+    expect(port.postMessage).toHaveBeenCalledTimes(2);
+    expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
+    expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [
+        dummyProtocolTab(),
+        dummyProtocolTab(),
+        dummyProtocolTab()
+    ] } satisfies S2CMessage);
+})
 
-// Test 5: test sending a message, and receiving tabs back (with tabs)
+// Test 4: test background receiving a message with no tabs
+test("query_connect_empty", async () => {
+    jest.restoreAllMocks();
+    jest.spyOn(chrome.tabs, "query").mockResolvedValue([]);
+
+    const port = mockPort();
+    jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
+    testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    expect(port.postMessage).toHaveBeenCalledTimes(2);
+    expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
+    expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [] } satisfies S2CMessage);
+})
+
+// Test 5: test background receiving multiple connections
+test("query_connect_concurrent", async () => {
+    jest.restoreAllMocks();
+    jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab()]);
+
+    const port1 = mockPort();
+    jest.spyOn(port1, "postMessage").mockImplementation((_message: any) => {});
+    testExports.handleNewConnection(port1);
+
+    const port2 = mockPort();
+    jest.spyOn(port2, "postMessage").mockImplementation((_message: any) => {});
+    testExports.handleNewConnection(port2);
+
+    await new Promise(process.nextTick);
+    expect(port1.postMessage).toHaveBeenCalledTimes(2);
+    expect(port1.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
+    expect(port1.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
+
+    expect(port2.postMessage).toHaveBeenCalledTimes(2);
+    expect(port2.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
+    expect(port2.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
+})
