@@ -1,7 +1,9 @@
+import {S2CMessage} from "../common/protocol";
 
-interface Window {
-    WINDOW_ID: number,
-    tabPort: chrome.runtime.Port,
+
+declare global {
+    var WINDOW_ID: number;
+    var tabPort: chrome.runtime.Port;
 }
 
 (async function() {
