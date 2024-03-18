@@ -48,7 +48,7 @@ type C2SConnectMessage = {
     windowId: number,
 }
 
-type C2STabSelectMessage = {
+export type C2STabSelectMessage = {
     message: "select",
     tabId: number,
 }
