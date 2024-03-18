@@ -1,4 +1,4 @@
-import {S2CMessage} from "../common/protocol";
+import {C2SMessage, S2CMessage, Tab} from "../common/protocol";
 
 
 declare global {
@@ -12,16 +12,12 @@ declare global {
     window.WINDOW_ID = wid;
 
     window.tabPort = chrome.runtime.connect({ name: `${wid}` });
-    window.tabPort.onMessage.addListener((message: S2CMessage | string []) => {
-        if(Array.isArray(message)){
-            let tabLength = message.length
-            for(let i = 0; i < tabLength; i++){
-                addElement(message[i]);
-            }
-        } else switch (message.message) {
+    window.tabPort.onMessage.addListener((message: S2CMessage) => {
+
+        switch (message.message) {
             case "state": {
                 for (const tab of message.tabs) {
-                    addElement(tab.title);
+                    addElement(tab);
                 }
                 break;
             }
@@ -31,17 +27,25 @@ declare global {
     });
 })().catch(console.error);
 
-function addElement(Names: string) {
+function addElement(Names: Tab) {
     // Creating newTab with the element of div
     const newTab = document.createElement("div");
     //Makind the newTab to have a class
     newTab.classList.add("Tabs")
     // Making tabcontent to contain text
-    const tabContent = document.createTextNode(Names);
+    const tabContent = document.createTextNode(Names.title);
     // Make newtab have tabContent
     newTab.appendChild(tabContent);
     // Get the main container element
+    newTab.style.cursor = "pointer";
     const mainContainer = document.querySelector(".MainContainer");
     // Append newTab to the main container
-    mainContainer.appendChild(newTab);
+    if(mainContainer != null)
+        mainContainer.appendChild(newTab);
+    newTab.addEventListener('click', (_e) => {
+        tabPort.postMessage({
+            message: "select",
+            tabId: Names.tabId
+        } satisfies C2SMessage)
+    });
 }
