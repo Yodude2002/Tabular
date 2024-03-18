@@ -33,8 +33,13 @@ function addElement(Names: Tab) {
     //Makind the newTab to have a class
     newTab.classList.add("Tabs")
     // Making tabcontent to contain text
+    const link = document.createElement("img");
+    // Setting href attribute for the link
+    link.src = Names.favicon;
+    console.log(Names.favicon);
     const tabContent = document.createTextNode(Names.title);
     // Make newtab have tabContent
+    newTab.append(link);
     newTab.appendChild(tabContent);
     // Get the main container element
     newTab.style.cursor = "pointer";
