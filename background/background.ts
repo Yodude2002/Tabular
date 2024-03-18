@@ -1,4 +1,4 @@
-import {S2CMessage, Tab} from "../common/protocol";
+import {S2CMessage, C2SMessage, C2STabSelectMessage, Tab} from "../common/protocol";
 
 chrome.runtime.onInstalled.addListener((_details) => {
     // on install
@@ -45,6 +45,14 @@ function handleNewConnection(port: chrome.runtime.Port) {
             } satisfies S2CMessage)
         }
     })
+
+    port.onMessage.addListener((a1: C2SMessage) => {
+
+        if (a1.message == "select") {
+            handleTabSelectMessage(a1);
+        }
+
+    });
 }
 
 function translateTab(tab: chrome.tabs.Tab): Tab {
@@ -67,7 +75,14 @@ function translateTab(tab: chrome.tabs.Tab): Tab {
     }
 }
 
+function handleTabSelectMessage(a1: C2STabSelectMessage){
+    chrome.tabs.update(a1.tabId, {
+        active: true
+    }).catch((a2) => {
+        console.error("Select tab did not work", a2)
+    })
+}
+
 export const testExports = {
     handleNewConnection: handleNewConnection
 }
-
