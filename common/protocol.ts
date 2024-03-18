@@ -41,9 +41,14 @@ type S2CRemoveMessage = {
     tabId: number,
 }
 
-export type C2SMessage = C2SConnectMessage;
+export type C2SMessage = C2SConnectMessage | C2STabSelectMessage;
 
 type C2SConnectMessage = {
     message: "connect",
     windowId: number,
+}
+
+type C2STabSelectMessage = {
+    message: "select",
+    tabId: number,
 }
