@@ -12,7 +12,7 @@ body {
 }
 .Tabs {
     background-color: rgba(60, 60, 60);
-    padding: 10px;
+    padding: 8px;
     flex: 100%;
     margin: 3px;
     overflow: hidden;
@@ -20,7 +20,15 @@ body {
     border-radius: 8px;
     color: white;
     font-size: x-large;
-
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    gap: 16px;
+    
+    & > img  {
+        width: 40px;
+        height: 40px;
+    };
 }
 .white{
     color: white;
