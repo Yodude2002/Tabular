@@ -11,5 +11,8 @@
     "background",
     "side_panel",
     "common"
+  ],
+  "exclude": [
+    "*/*.test.ts"
   ]
 }
