@@ -31,6 +31,9 @@ body {
     };
     & > button {
         margin-left: auto;
+        background-color: rgba(60, 60, 60);
+        border-style: hidden;
+        color: white;
     }
 }
 .white{
