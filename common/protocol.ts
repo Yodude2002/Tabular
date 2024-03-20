@@ -41,7 +41,7 @@ type S2CRemoveMessage = {
     tabId: number,
 }
 
-export type C2SMessage = C2SConnectMessage | C2STabSelectMessage;
+export type C2SMessage = C2SConnectMessage | C2STabSelectMessage | C2SRemoveMessage;
 
 type C2SConnectMessage = {
     message: "connect",
@@ -50,5 +50,9 @@ type C2SConnectMessage = {
 
 type C2STabSelectMessage = {
     message: "select",
+    tabId: number,
+}
+type C2SRemoveMessage = {
+    message: "remove",
     tabId: number,
 }

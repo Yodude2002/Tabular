@@ -30,17 +30,36 @@ declare global {
 function addElement(Names: Tab) {
     // Creating newTab with the element of div
     const newTab = document.createElement("div");
+    // This is for putting the text within a div element
+    const textholder = document.createElement("div");
+
+
     //Makind the newTab to have a class
     newTab.classList.add("Tabs")
+    //Classifies textspace class within CSS
+    textholder.classList.add("textspace")
     // Making tabcontent to contain text
     const link = document.createElement("img");
     // Setting href attribute for the link
+
+    const button = document.createElement("button");
+    
     link.src = Names.favicon;
     console.log(Names.favicon);
     const tabContent = document.createTextNode(Names.title);
     // Make newtab have tabContent
+
     newTab.append(link);
-    newTab.appendChild(tabContent);
+
+    //newTab.appendChild(tabContent);
+    textholder.appendChild(tabContent);
+    newTab.append(textholder);
+
+    // Labeling the button as X
+    const exitmessage = document.createTextNode("X");
+    newTab.append(button);
+    button.append(exitmessage);
+
     // Get the main container element
     newTab.style.cursor = "pointer";
     const mainContainer = document.querySelector(".MainContainer");
@@ -50,6 +69,13 @@ function addElement(Names: Tab) {
     newTab.addEventListener('click', (_e) => {
         tabPort.postMessage({
             message: "select",
+            tabId: Names.tabId
+        } satisfies C2SMessage)
+    });
+    // button activation stuff, remove exit button
+    button.addEventListener('click', (_e) => {
+        tabPort.postMessage({
+            message: "remove",
             tabId: Names.tabId
         } satisfies C2SMessage)
     });
