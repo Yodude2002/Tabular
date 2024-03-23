@@ -34,6 +34,7 @@ body {
         background-color: rgba(60, 60, 60);
         border-style: hidden;
         color: white;
+        cursor: pointer;
     }
 }
 .white{
@@ -41,4 +42,5 @@ body {
 }
 .textspace {
     overflow: hidden;
+    cursor: default;
 }
