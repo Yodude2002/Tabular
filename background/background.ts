@@ -75,7 +75,7 @@ function findParentID(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]) {
         }
     }
 
-    if (tab.openerTabId = tabArray[s].id)
+    if (tab.openerTabId == tabArray[s].id)
     return tab.openerTabId;
     else
     return -1;
