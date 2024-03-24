@@ -68,7 +68,6 @@ function handleTabSelectMessage(a1: C2STabSelectMessage){
 }
 
 function findParentID(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]) {
-    //
     let s = 0;
     for (let i = 0; i < tabArray.length; i++) {
         if (tabArray[i].id == tab.id) {
