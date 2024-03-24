@@ -13,7 +13,9 @@ chrome.runtime.onConnect.addListener((port) => {
 function handleNewConnection(port: chrome.runtime.Port) {
     const windowId = parseInt(port.name);
 
-    let tab = chrome.tabs.query({});
+    let tab = chrome.tabs.query({
+        windowId: windowId
+    });
     tab.then((a1) => {
 
         let s = new Array<Tab>(a1.length);
@@ -25,6 +27,24 @@ function handleNewConnection(port: chrome.runtime.Port) {
     });
 
     port.postMessage({ message: "ack" } as S2CMessage)
+
+    chrome.tabs.onCreated.addListener((t) => {
+        if (t.windowId === windowId) {
+            port.postMessage({
+                message: "insert",
+                globalIndex: t.index,
+                tabInfo: translateTab(t)
+            } satisfies S2CMessage)
+        }
+    });
+    chrome.tabs.onRemoved.addListener((id, removeInfo) => {
+        if (removeInfo.windowId === windowId) {
+            port.postMessage({
+                message: "remove",
+                tabId: id,
+            } satisfies S2CMessage)
+        }
+    })
 }
 
 function translateTab(tab: chrome.tabs.Tab): Tab {
