@@ -19,6 +19,7 @@ function handleNewConnection(port: chrome.runtime.Port) {
         let s = new Array<Tab>(a1.length);
         for(let i = 0; i < a1.length; i++) {
             s[i] = translateTab(a1[i], a1);
+            console.log(s[i]);
         }
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
 
@@ -45,7 +46,7 @@ function translateTab(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]): Tab {
         groupId: tab.groupId,
         highlighted: tab.highlighted,
         muted: tab.mutedInfo?.muted ?? false,
-        parentId: findParentID(tab, tabArray) ?? -1,
+        parentId: -1,
         pinned: tab.pinned,
         tabId: tab.id ?? 0,
         title: tab.title ?? "",
@@ -67,22 +68,18 @@ function handleTabSelectMessage(a1: C2STabSelectMessage){
     })
 }
 
-function findParentID(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]) {
+/*function findParentID(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]) {
     let s = 0;
     for (let i = 0; i < tabArray.length; i++) {
         if (tabArray[i].id == tab.id) {
             s = i-1;
         }
     }
-    
+    console.log(s);
     if (tabArray[s].id > 0){
     if (tab.openerTabId == tabArray[s].id)
     return tab.openerTabId;
     else
     return -1;
     }
-}
-
-function resolveTab(){
-
-}
+}*/
