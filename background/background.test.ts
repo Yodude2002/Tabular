@@ -1,19 +1,5 @@
 import {S2CMessage, Tab} from "../common/protocol";
-
-global.chrome = {
-    tabs: {
-        query: async(_queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> => {
-            throw new Error("override this with jest.spyOn()");
-        },
-        onCreated: emptyEvent(),
-        onRemoved: emptyEvent(),
-    },
-    runtime: {
-        onConnect: emptyEvent(),
-        onInstalled: emptyEvent()
-    }
-} as typeof chrome
-
+import * as testUtil from "./test_util.test";
 import {testExports} from "./background";
 
 
@@ -58,55 +44,6 @@ function dummyProtocolTab(): Tab {
         groupId: -1,
     }
 }
-function emptyEvent<T extends Function>(): chrome.events.Event<T> {
-    return {
-        hasListener<T>(_callback: T): boolean { return false; },
-        removeListener<T>(_callback: T): void {},
-        addListener(_callback: T, _filter?: chrome.webRequest.RequestFilter): void {},
-        addRules(_rules: chrome.events.Rule[], _callback?: (rules: chrome.events.Rule[]) => void): void {},
-        getRules(_ruleIdentifiers: string[] | ((rules: chrome.events.Rule[]) => void), _callback?: (rules: chrome.events.Rule[]) => void): void {},
-        hasListeners(): boolean { return false; },
-        removeRules(_ruleIdentifiers?: (() => void) | string[], _callback?: () => void): void {}
-    }
-}
-function mockEvent<T extends Function>(): chrome.events.Event<T> {
-    return {
-        hasListener<T>(_callback: T): boolean {
-            throw new Error("unimplemented");
-        },
-        removeListener<T>(_callback: T): void {
-            throw new Error("unimplemented");
-        },
-        addListener(_callback: T, _filter?: chrome.webRequest.RequestFilter): void {
-            throw new Error("unimplemented");
-        },
-        addRules(_rules: chrome.events.Rule[], _callback?: (rules: chrome.events.Rule[]) => void): void {
-            throw new Error("unimplemented");
-        },
-        getRules(_ruleIdentifiers: string[] | ((rules: chrome.events.Rule[]) => void), _callback?: (rules: chrome.events.Rule[]) => void): void {
-            throw new Error("unimplemented");
-        },
-        hasListeners(): boolean {
-            throw new Error("unimplemented");
-        },
-        removeRules(_ruleIdentifiers?: (() => void) | string[], _callback?: () => void): void {
-            throw new Error("unimplemented");
-        }
-    }
-}
-function mockPort(): chrome.runtime.Port {
-    return {
-        postMessage: (_message: any): void => { throw new Error("unimplemented") },
-        disconnect: (): void => {},
-        onDisconnect: mockEvent(),
-        name: "2137921002",
-        onMessage: emptyEvent(),
-    }
-}
-
-test("dummy_test", () => {
-    expect(1 + 1).toBe(2);
-})
 
 // Test 1: test receiving tabs
 test("query_tabs", async () => {
@@ -120,7 +57,7 @@ test("query_connect", async () => {
     jest.restoreAllMocks();
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab()]);
 
-    const port = mockPort();
+    const port = testUtil.mockPort();
     jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
     testExports.handleNewConnection(port);
 
@@ -135,7 +72,7 @@ test("query_connect_many", async () => {
     jest.restoreAllMocks();
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab(), dummyChromeTab(), dummyChromeTab()]);
 
-    const port = mockPort();
+    const port = testUtil.mockPort();
     jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
     testExports.handleNewConnection(port);
 
@@ -154,7 +91,7 @@ test("query_connect_empty", async () => {
     jest.restoreAllMocks();
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([]);
 
-    const port = mockPort();
+    const port = testUtil.mockPort();
     jest.spyOn(port, "postMessage").mockImplementation((_message: any) => {});
     testExports.handleNewConnection(port);
 
@@ -169,11 +106,11 @@ test("query_connect_concurrent", async () => {
     jest.restoreAllMocks();
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([dummyChromeTab()]);
 
-    const port1 = mockPort();
+    const port1 = testUtil.mockPort();
     jest.spyOn(port1, "postMessage").mockImplementation((_message: any) => {});
     testExports.handleNewConnection(port1);
 
-    const port2 = mockPort();
+    const port2 = testUtil.mockPort();
     jest.spyOn(port2, "postMessage").mockImplementation((_message: any) => {});
     testExports.handleNewConnection(port2);
 
