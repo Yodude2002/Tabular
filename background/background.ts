@@ -32,8 +32,6 @@ function handleNewConnection(port: chrome.runtime.Port) {
 
     });
 
-    port.postMessage({ message: "ack" } as S2CMessage)
-
     chrome.tabs.onCreated.addListener((t) => {
         if (t.windowId === windowId) {
             port.postMessage({
@@ -98,5 +96,8 @@ function handleTabRemoveMessage(a1: C2SRemoveMessage) {
 }
 
 export const testExports = {
-    handleNewConnection: handleNewConnection
+    handleNewConnection: handleNewConnection,
+    translateTab: translateTab,
+    handleTabSelectMessage: handleTabSelectMessage,
+    handleTabRemoveMessage: handleTabRemoveMessage,
 }

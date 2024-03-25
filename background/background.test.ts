@@ -62,9 +62,8 @@ test("query_connect", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
-    expect(port.postMessage).toHaveBeenCalledTimes(2);
-    expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
-    expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
+    expect(port.postMessage).toHaveBeenCalledTimes(1);
+    expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
 })
 
 // Test 3: test background receiving a message with multiple tabs
@@ -77,9 +76,8 @@ test("query_connect_many", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
-    expect(port.postMessage).toHaveBeenCalledTimes(2);
-    expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
-    expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [
+    expect(port.postMessage).toHaveBeenCalledTimes(1);
+    expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [
         dummyProtocolTab(),
         dummyProtocolTab(),
         dummyProtocolTab()
@@ -96,9 +94,8 @@ test("query_connect_empty", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
-    expect(port.postMessage).toHaveBeenCalledTimes(2);
-    expect(port.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
-    expect(port.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [] } satisfies S2CMessage);
+    expect(port.postMessage).toHaveBeenCalledTimes(1);
+    expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [] } satisfies S2CMessage);
 })
 
 // Test 5: test background receiving multiple connections
@@ -115,11 +112,9 @@ test("query_connect_concurrent", async () => {
     testExports.handleNewConnection(port2);
 
     await new Promise(process.nextTick);
-    expect(port1.postMessage).toHaveBeenCalledTimes(2);
-    expect(port1.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
-    expect(port1.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
+    expect(port1.postMessage).toHaveBeenCalledTimes(1);
+    expect(port1.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
 
-    expect(port2.postMessage).toHaveBeenCalledTimes(2);
-    expect(port2.postMessage).toHaveBeenNthCalledWith(1, { message: "ack" } satisfies S2CMessage);
-    expect(port2.postMessage).toHaveBeenNthCalledWith(2, { message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
+    expect(port2.postMessage).toHaveBeenCalledTimes(1);
+    expect(port2.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
 })
