@@ -13,6 +13,8 @@ global.chrome = {
     }
 } as typeof chrome
 
+export const WINDOW_ID = 2137921002;
+
 export function emptyEvent<T extends Function>(): chrome.events.Event<T> {
     return {
         hasListener<T>(_callback: T): boolean { return false; },
@@ -54,7 +56,7 @@ export function mockPort(): chrome.runtime.Port {
         postMessage: (_message: any): void => { throw new Error("unimplemented") },
         disconnect: (): void => {},
         onDisconnect: mockEvent(),
-        name: "2137921002",
+        name: `${WINDOW_ID}`,
         onMessage: emptyEvent(),
     }
 }
