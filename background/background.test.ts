@@ -4,7 +4,9 @@ global.chrome = {
     tabs: {
         query: async(_queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> => {
             throw new Error("override this with jest.spyOn()");
-        }
+        },
+        onCreated: emptyEvent(),
+        onRemoved: emptyEvent(),
     },
     runtime: {
         onConnect: emptyEvent(),
@@ -98,7 +100,7 @@ function mockPort(): chrome.runtime.Port {
         disconnect: (): void => {},
         onDisconnect: mockEvent(),
         name: "2137921002",
-        onMessage: mockEvent(),
+        onMessage: emptyEvent(),
     }
 }
 
