@@ -25,8 +25,13 @@ declare global {
                 removeElement(String(message.tabId));
                 break;
             }
+            case "insert": {
+                //Need to implement global index (probably make a function that uses addElement())
+                addElement(message.tabInfo);
+                break;
+            }
             case "ack": break;
-            default: throw new Error(`unhandled message type: ${message.message}`)
+            //default: throw new Error(`unhandled message type: ${message.message}`)
         }
     });
 })().catch(console.error);
