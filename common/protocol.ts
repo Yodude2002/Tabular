@@ -52,7 +52,7 @@ export type C2STabSelectMessage = {
     message: "select",
     tabId: number,
 }
-type C2SRemoveMessage = {
+export type C2SRemoveMessage = {
     message: "remove",
     tabId: number,
 }
