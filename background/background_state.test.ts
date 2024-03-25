@@ -23,14 +23,14 @@ function dummyChromeTab(): chrome.tabs.Tab {
         title: "Yodude2002/Tabular: Tab Management for Chromium Browsers",
         url: "https://github.com/Yodude2002/Tabular",
         width: 1440,
-        windowId: 2137921002,
+        windowId: testUtil.WINDOW_ID,
     }
 }
 function dummyProtocolTab(): Tab {
     return {
         tabId: 2137921700,
         parentId: -1,
-        windowId: 2137921002,
+        windowId: testUtil.WINDOW_ID,
         title: "Yodude2002/Tabular: Tab Management for Chromium Browsers",
         url: "https://github.com/Yodude2002/Tabular",
         pinned: false,
@@ -62,6 +62,9 @@ test("query_connect", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
+    expect(chrome.tabs.query).toHaveBeenCalledTimes(1);
+    expect(chrome.tabs.query).toHaveBeenCalledWith({ windowId: testUtil.WINDOW_ID } satisfies chrome.tabs.QueryInfo)
+
     expect(port.postMessage).toHaveBeenCalledTimes(1);
     expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
 })
@@ -76,6 +79,9 @@ test("query_connect_many", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
+    expect(chrome.tabs.query).toHaveBeenCalledTimes(1);
+    expect(chrome.tabs.query).toHaveBeenCalledWith({ windowId: testUtil.WINDOW_ID } satisfies chrome.tabs.QueryInfo);
+
     expect(port.postMessage).toHaveBeenCalledTimes(1);
     expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [
         dummyProtocolTab(),
@@ -94,6 +100,9 @@ test("query_connect_empty", async () => {
     testExports.handleNewConnection(port);
 
     await new Promise(process.nextTick);
+    expect(chrome.tabs.query).toHaveBeenCalledTimes(1);
+    expect(chrome.tabs.query).toHaveBeenCalledWith({ windowId: testUtil.WINDOW_ID } satisfies chrome.tabs.QueryInfo);
+
     expect(port.postMessage).toHaveBeenCalledTimes(1);
     expect(port.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [] } satisfies S2CMessage);
 })
@@ -112,6 +121,9 @@ test("query_connect_concurrent", async () => {
     testExports.handleNewConnection(port2);
 
     await new Promise(process.nextTick);
+    expect(chrome.tabs.query).toHaveBeenCalledTimes(2);
+    expect(chrome.tabs.query).toHaveBeenCalledWith({ windowId: testUtil.WINDOW_ID } satisfies chrome.tabs.QueryInfo);
+
     expect(port1.postMessage).toHaveBeenCalledTimes(1);
     expect(port1.postMessage).toHaveBeenCalledWith({ message: "state", tabs: [dummyProtocolTab()] } satisfies S2CMessage);
 
