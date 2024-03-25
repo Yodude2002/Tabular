@@ -1,4 +1,10 @@
-import {S2CMessage, C2SMessage, C2STabSelectMessage, Tab} from "../common/protocol";
+import {
+    S2CMessage,
+    C2SMessage,
+    C2STabSelectMessage,
+    Tab,
+    C2SRemoveMessage
+} from "../common/protocol";
 
 chrome.runtime.onInstalled.addListener((_details) => {
     // on install
@@ -48,10 +54,14 @@ function handleNewConnection(port: chrome.runtime.Port) {
 
     port.onMessage.addListener((a1: C2SMessage) => {
 
-        if (a1.message == "select") {
-            handleTabSelectMessage(a1);
+        switch (a1.message) {
+            case "select":
+                handleTabSelectMessage(a1);
+                break;
+            case "remove":
+                handleTabRemoveMessage(a1);
+                break;
         }
-
     });
 }
 
@@ -81,6 +91,10 @@ function handleTabSelectMessage(a1: C2STabSelectMessage){
     }).catch((a2) => {
         console.error("Select tab did not work", a2)
     })
+}
+
+function handleTabRemoveMessage(a1: C2SRemoveMessage) {
+    chrome.tabs.remove(a1.tabId).catch(console.error);
 }
 
 export const testExports = {
