@@ -18,8 +18,15 @@ function handleNewConnection(port: chrome.runtime.Port) {
 
         let s = new Array<Tab>(a1.length);
         for(let i = 0; i < a1.length; i++) {
-            s[i] = translateTab(a1[i], a1);
+            if (i == 0)
+                s[i] = translateTab(a1[i], a1[i]);
+            else
+                s[i] = translateTab(a1[i], a1[i-1]);
+            
             console.log(s[i]);
+
+           // else
+            //s[i] = translateTab(a1[i], a1[i-1]);
         }
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
 
@@ -32,11 +39,10 @@ function handleNewConnection(port: chrome.runtime.Port) {
         if (a1.message == "select") {
             handleTabSelectMessage(a1);
         }
-
     });
 }
 
-function translateTab(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]): Tab {
+function translateTab(tab: chrome.tabs.Tab, ltab: chrome.tabs.Tab): Tab {
     return {
         active: tab.active,
         audible: tab.audible ?? false,
@@ -46,7 +52,7 @@ function translateTab(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]): Tab {
         groupId: tab.groupId,
         highlighted: tab.highlighted,
         muted: tab.mutedInfo?.muted ?? false,
-        parentId: -1,
+        parentId: findParentID(tab, ltab),
         pinned: tab.pinned,
         tabId: tab.id ?? 0,
         title: tab.title ?? "",
@@ -68,18 +74,9 @@ function handleTabSelectMessage(a1: C2STabSelectMessage){
     })
 }
 
-/*function findParentID(tab: chrome.tabs.Tab, tabArray: chrome.tabs.Tab[]) {
-    let s = 0;
-    for (let i = 0; i < tabArray.length; i++) {
-        if (tabArray[i].id == tab.id) {
-            s = i-1;
-        }
-    }
-    console.log(s);
-    if (tabArray[s].id > 0){
-    if (tab.openerTabId == tabArray[s].id)
-    return tab.openerTabId;
+function findParentID(tab: chrome.tabs.Tab, ltabId: chrome.tabs.Tab) {
+    if (tab.openerTabId == ltabId.id && tab.index > ltabId.index)
+        return tab.openerTabId;
     else
-    return -1;
-    }
-}*/
+        return -1;
+}
