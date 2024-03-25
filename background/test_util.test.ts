@@ -1,11 +1,14 @@
 
 global.chrome = {
     tabs: {
-        query: async(_queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> => {
-            throw new Error("override this with jest.spyOn()");
+        query: async (_queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> => {
+            throw new Error("override chrome tabs.query with jest.spyOn()");
         },
         onCreated: emptyEvent(),
         onRemoved: emptyEvent(),
+        remove: async (_tabId: number): Promise<void> => {
+            throw new Error("override chrome.tabs.remove with jest.spyOn()");
+        }
     },
     runtime: {
         onConnect: emptyEvent(),
