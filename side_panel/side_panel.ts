@@ -21,6 +21,10 @@ declare global {
                 }
                 break;
             }
+            case "remove": {
+                removeElement(String(message.tabId));
+                break;
+            }
             case "ack": break;
             default: throw new Error(`unhandled message type: ${message.message}`)
         }
@@ -33,6 +37,7 @@ function addElement(Names: Tab) {
     // This is for putting the text within a div element
     const textholder = document.createElement("div");
 
+    newTab.id = String(Names.tabId);
 
     //Makind the newTab to have a class
     newTab.classList.add("Tabs")
@@ -79,4 +84,9 @@ function addElement(Names: Tab) {
             tabId: Names.tabId
         } satisfies C2SMessage)
     });
+}
+
+function removeElement(removeId: string){
+    const removedTab = document.getElementById(removeId);
+    removedTab.remove();
 }
