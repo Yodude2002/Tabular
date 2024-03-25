@@ -18,15 +18,12 @@ function handleNewConnection(port: chrome.runtime.Port) {
 
         let s = new Array<Tab>(a1.length);
         for(let i = 0; i < a1.length; i++) {
-            if (i == 0)
+            //if (i == 0)
                 s[i] = translateTab(a1[i], a1[i]);
-            else
-                s[i] = translateTab(a1[i], a1[i-1]);
+            //else
+             //   s[i] = translateTab(a1[i], a1[i-1]);
             
             console.log(s[i]);
-
-           // else
-            //s[i] = translateTab(a1[i], a1[i-1]);
         }
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
 
