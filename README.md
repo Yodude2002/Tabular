@@ -1,9 +1,21 @@
 # Tabular
 Tab management for Chromium Browsers
 
+Chrome places its tabs on the tab strip; With large numbers of tabs, this makes organization difficult or impossible.
+Tabular presents a menu in the Side Panel that mirrors Chrome's tab strip, providing access to the same features with a different layout.
+Tabular aims to have feature-parity with the Tab Strip, with support for tab groups, a context menu, and drag & drop.
+
+Additionally, Tabular organizes its tabs in a hierarchical view, placing its tabs in a tree (like [Tree Style Tab](https://addons.mozilla.org/en-US/firefox/addon/tree-style-tab/)).
+
+This project is not complete; planned features may be incomplete, broken, or missing.
+
 ## Prerequisites
 
-This project builds using TypeScript and tests with ts-jest. After installing [Node.js](https://nodejs.org), run the following in the working directory of the project:
+This project builds using TypeScript and tests with ts-jest. After installing [Node.js](https://nodejs.org), clone the repository:
+```sh
+git clone https://github.com/Yodude2002/Tabular.git
+```
+Navigate to the working directory, and install dependencies:
 ```sh
 npm install
 ```
@@ -25,6 +37,9 @@ Once the project is built, you'll need to load the extension in Chrome:
 4. Navigate to the working directory of the project, and load the extension.
 
 For more information, refer to [Loading an Unpacked Extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)
+
+To open the Side Panel, Click the Side Panel icon in the Chrome toolbar (located to the right of the Extensions menu).
+Using the drop-down menu at the top of the Side Panel, selct 'Tabular'
 
 ### Reloading Tabular
 
