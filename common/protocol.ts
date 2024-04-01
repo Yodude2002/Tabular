@@ -20,7 +20,8 @@ export type S2CMessage = S2CAckMessage
     | S2CStateMessage
     | S2CInsertMessage
     | S2CRemoveMessage
-    | S2CUpdateMessage;
+    | S2CUpdateMessage
+    | S2CMoveMessage;
 
 type S2CAckMessage = {
     message: "ack",
@@ -45,6 +46,13 @@ type S2CRemoveMessage = {
 type S2CUpdateMessage = {
     message: "update",
     tabInfo: Tab,
+}
+
+type S2CMoveMessage = {
+    message: "move",
+    tabId: number,
+    parentId: number,
+    globalIndex: number,
 }
 
 export type C2SMessage = C2SConnectMessage | C2STabSelectMessage | C2SRemoveMessage;
