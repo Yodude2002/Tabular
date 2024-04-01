@@ -17,7 +17,7 @@ declare global {
         switch (message.message) {
             case "state": {
                 for (const tab of message.tabs) {
-                    addElement(tab);
+                    appendtoContainer(tab);
                 }
                 break;
             }
@@ -27,7 +27,12 @@ declare global {
             }
             case "insert": {
                 //Need to implement global index (probably make a function that uses addElement())
-                addElement(message.tabInfo);
+                /*var replacementElement = addElement(message.tabInfo);
+                var stuff = document.querySelector(".MainContainer");
+                var beforereplacementElement = stuff.children[message.globalIndex];
+                stuff.insertBefore(replacementElement , beforereplacementElement);*/
+                insertintoContainer(message.tabInfo, message.globalIndex);
+                
                 break;
             }
             case "ack": break;
@@ -36,7 +41,7 @@ declare global {
     });
 })().catch(console.error);
 
-function addElement(Names: Tab) {
+function addElement(Names: Tab): HTMLElement {
     // Creating newTab with the element of div
     const newTab = document.createElement("div");
     // This is for putting the text within a div element
@@ -74,8 +79,8 @@ function addElement(Names: Tab) {
     newTab.style.cursor = "pointer";
     const mainContainer = document.querySelector(".MainContainer");
     // Append newTab to the main container
-    if(mainContainer != null)
-        mainContainer.appendChild(newTab);
+    //if(mainContainer != null)
+    //    mainContainer.appendChild(newTab);
     newTab.addEventListener('click', (_e) => {
         tabPort.postMessage({
             message: "select",
@@ -89,9 +94,23 @@ function addElement(Names: Tab) {
             tabId: Names.tabId
         } satisfies C2SMessage)
     });
+    return newTab;
 }
 
 function removeElement(removeId: string){
     const removedTab = document.getElementById(removeId);
     removedTab.remove();
+}
+function appendtoContainer(Names: Tab){
+    const element = addElement(Names);
+    var flexContainer = document.querySelector(".MainContainer");
+    if(flexContainer != null)
+        flexContainer.appendChild(element);
+}
+function insertintoContainer(currenttabInfo: Tab, funnyindex: number){
+    var replacementElement = addElement(currenttabInfo);
+    var stuff = document.querySelector(".MainContainer");
+    var beforereplacementElement = stuff.children[funnyindex];
+    stuff.insertBefore(replacementElement , beforereplacementElement);
+
 }
