@@ -49,6 +49,14 @@ function handleNewConnection(port: chrome.runtime.Port) {
             } satisfies S2CMessage)
         }
     })
+    chrome.tabs.onUpdated.addListener((id, info, tab) => {
+        if (tab.windowId === windowId) {
+            port.postMessage({
+                message: "update",
+                tabInfo: translateTab(tab)
+            } satisfies S2CMessage)
+        }
+    })
 
     port.onMessage.addListener((a1: C2SMessage) => {
 

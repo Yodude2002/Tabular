@@ -19,7 +19,8 @@ export type Tab = {
 export type S2CMessage = S2CAckMessage
     | S2CStateMessage
     | S2CInsertMessage
-    | S2CRemoveMessage;
+    | S2CRemoveMessage
+    | S2CUpdateMessage;
 
 type S2CAckMessage = {
     message: "ack",
@@ -39,6 +40,11 @@ type S2CInsertMessage = {
 type S2CRemoveMessage = {
     message: "remove",
     tabId: number,
+}
+
+type S2CUpdateMessage = {
+    message: "update",
+    tabInfo: Tab,
 }
 
 export type C2SMessage = C2SConnectMessage | C2STabSelectMessage | C2SRemoveMessage;
