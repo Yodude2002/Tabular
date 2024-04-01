@@ -27,10 +27,6 @@ declare global {
             }
             case "insert": {
                 //Need to implement global index (probably make a function that uses addElement())
-                /*var replacementElement = addElement(message.tabInfo);
-                var stuff = document.querySelector(".MainContainer");
-                var beforereplacementElement = stuff.children[message.globalIndex];
-                stuff.insertBefore(replacementElement , beforereplacementElement);*/
                 insertintoContainer(message.tabInfo, message.globalIndex);
                 
                 break;
@@ -79,8 +75,6 @@ function addElement(Names: Tab): HTMLElement {
     newTab.style.cursor = "pointer";
     const mainContainer = document.querySelector(".MainContainer");
     // Append newTab to the main container
-    //if(mainContainer != null)
-    //    mainContainer.appendChild(newTab);
     newTab.addEventListener('click', (_e) => {
         tabPort.postMessage({
             message: "select",
