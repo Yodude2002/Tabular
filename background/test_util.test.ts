@@ -6,6 +6,7 @@ global.chrome = {
         },
         onCreated: emptyEvent(),
         onRemoved: emptyEvent(),
+        onUpdated: emptyEvent(),
         remove: async (_tabId: number): Promise<void> => {
             throw new Error("override chrome.tabs.remove with jest.spyOn()");
         }
