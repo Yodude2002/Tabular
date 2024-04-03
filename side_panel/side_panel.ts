@@ -31,6 +31,11 @@ declare global {
                 
                 break;
             }
+            case "update":{
+                updateTab(message.tabInfo);
+                break;
+
+            }
             case "ack": break;
             //default: throw new Error(`unhandled message type: ${message.message}`)
         }
@@ -42,6 +47,7 @@ function addElement(Names: Tab): HTMLElement {
     const newTab = document.createElement("div");
     // This is for putting the text within a div element
     const textholder = document.createElement("div");
+    
 
     newTab.id = String(Names.tabId);
 
@@ -73,7 +79,7 @@ function addElement(Names: Tab): HTMLElement {
 
     // Get the main container element
     newTab.style.cursor = "pointer";
-    const mainContainer = document.querySelector(".MainContainer");
+    //const mainContainer = document.querySelector(".MainContainer");
     // Append newTab to the main container
     newTab.addEventListener('click', (_e) => {
         tabPort.postMessage({
@@ -106,5 +112,15 @@ function insertintoContainer(currenttabInfo: Tab, funnyindex: number){
     var stuff = document.querySelector(".MainContainer");
     var beforereplacementElement = stuff.children[funnyindex];
     stuff.insertBefore(replacementElement , beforereplacementElement);
+}
+function updateTab(currenttabInfo: Tab){
+    var randomstuff = document.getElementById(String(currenttabInfo.tabId));
+    var randomstuff2 = randomstuff.querySelector(".textspace");
+    var randomstuff3 = randomstuff.querySelector("img");
+    //Refactoring is needed in the future
+    randomstuff2.textContent = currenttabInfo.title;
+    randomstuff3.src = currenttabInfo.favicon;
+
+
 
 }
