@@ -28,6 +28,7 @@ function handleNewConnection(port: chrome.runtime.Port) {
         for(let i = 0; i < a1.length; i++) {
             s[i] = translateTab(a1[i]);
         }
+        assignParents(s, a1);
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
 
     });
@@ -86,8 +87,27 @@ function translateTab(tab: chrome.tabs.Tab): Tab {
         tabId: tab.id ?? 0,
         title: tab.title ?? "",
         url: tab.url ?? "",
-        windowId: tab.windowId
+        windowId: tab.windowId,
+    }
+}
 
+function assignParents(tabs: Tab[], native: chrome.tabs.Tab[]) {
+    const stack: number[] = [];
+    for(let i = 0; i < tabs.length; i++) {
+        const tab = tabs[i];
+        const ct = native[i];
+        if (ct.openerTabId === undefined) {
+            stack.splice(0, stack.length);
+        } else {
+            const index = stack.indexOf(ct.openerTabId);
+            if (index < 0) {
+                stack.splice(0, stack.length);
+            } else {
+                stack.splice(index + 1, stack.length - index - 1);
+                tab.parentId = ct.openerTabId;
+            }
+        }
+        stack.push(tab.tabId);
     }
 }
 
