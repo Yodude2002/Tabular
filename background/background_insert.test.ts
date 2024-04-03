@@ -1,5 +1,14 @@
 
 import * as testUtil from "./test_util.test";
+
+declare global {
+    var onCreated: (tab: chrome.tabs.Tab) => void
+}
+
+jest.spyOn(chrome.tabs.onCreated, "addListener").mockImplementationOnce((fn: (tab: chrome.tabs.Tab) => void) => {
+    globalThis.onCreated = fn
+});
+
 import {testExports} from "./background";
 import {S2CMessage, Tab} from "../common/protocol";
 
@@ -95,10 +104,6 @@ function protocolTabWith(tab: Partial<Tab>): Tab {
 
 test("s2c_insert", async () => {
     const port = testUtil.mockPort();
-    jest.spyOn(chrome.tabs.onCreated, "addListener")
-        .mockImplementationOnce((fn: (tab: chrome.tabs.Tab) => void) => {
-        fn(chromeTabWith({ id: 2137921702, index: 2 }));
-    })
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([
         chromeTabWith({ id: 2137921700, index: 0}),
         chromeTabWith({ id: 2137921701, index: 1}),
@@ -106,6 +111,9 @@ test("s2c_insert", async () => {
     jest.spyOn(port, "postMessage").mockReturnValue(undefined);
 
     testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    onCreated(chromeTabWith({ id: 2137921702, index: 2 }));
 
     await new Promise(process.nextTick);
     expect(port.postMessage).toHaveBeenCalledWith({
@@ -117,10 +125,6 @@ test("s2c_insert", async () => {
 
 test("s2c_insert_middle", async () => {
     const port = testUtil.mockPort();
-    jest.spyOn(chrome.tabs.onCreated, "addListener")
-        .mockImplementationOnce((fn: (tab: chrome.tabs.Tab) => void) => {
-        fn(chromeTabWith({ id: 2137921702, index: 1 }));
-    })
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([
         chromeTabWith({ id: 2137921700, index: 0}),
         chromeTabWith({ id: 2137921701, index: 1}),
@@ -128,6 +132,9 @@ test("s2c_insert_middle", async () => {
     jest.spyOn(port, "postMessage").mockReturnValue(undefined);
 
     testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    onCreated(chromeTabWith({ id: 2137921702, index: 1 }));
 
     await new Promise(process.nextTick);
     expect(port.postMessage).toHaveBeenCalledWith({
@@ -144,10 +151,6 @@ test("s2c_insert_middle", async () => {
 
 test("s2c_insert_wrong_window", async () => {
     const port = testUtil.mockPort();
-    jest.spyOn(chrome.tabs.onCreated, "addListener")
-        .mockImplementationOnce((fn: (tab: chrome.tabs.Tab) => void) => {
-        fn(chromeTabWith({ id: 2137921702, index: 2, windowId: testUtil.WINDOW_ID + 1 }));
-    })
     jest.spyOn(chrome.tabs, "query").mockResolvedValue([
         chromeTabWith({ id: 2137921700, index: 0}),
         chromeTabWith({ id: 2137921701, index: 1}),
@@ -155,6 +158,9 @@ test("s2c_insert_wrong_window", async () => {
     jest.spyOn(port, "postMessage").mockReturnValue(undefined);
 
     testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    onCreated(chromeTabWith({ id: 2137921702, index: 2, windowId: testUtil.WINDOW_ID + 1 }));
 
     await new Promise(process.nextTick);
     expect(port.postMessage).not.toHaveBeenCalledWith({

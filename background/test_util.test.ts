@@ -13,7 +13,12 @@ global.chrome = {
     },
     runtime: {
         onConnect: emptyEvent(),
-        onInstalled: emptyEvent()
+        onInstalled: {
+            ...emptyEvent(),
+            addListener(callback: (_d: chrome.runtime.InstalledDetails) => void) {
+                callback({ reason: "install" as chrome.runtime.OnInstalledReason });
+            }
+        },
     }
 } as typeof chrome
 
@@ -59,7 +64,7 @@ export function mockPort(): chrome.runtime.Port {
     return {
         postMessage: (_message: any): void => { throw new Error("unimplemented") },
         disconnect: (): void => {},
-        onDisconnect: mockEvent(),
+        onDisconnect: emptyEvent(),
         name: `${WINDOW_ID}`,
         onMessage: emptyEvent(),
     }

@@ -1,5 +1,14 @@
 
 import * as testUtil from "./test_util.test";
+
+declare global {
+    var onRemoved: (tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) => void;
+}
+
+jest.spyOn(chrome.tabs.onRemoved, "addListener").mockImplementationOnce((fn: (tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) => void) => {
+    globalThis.onRemoved = fn;
+})
+
 import {testExports} from "./background";
 import {C2SMessage, C2SRemoveMessage, S2CMessage} from "../common/protocol";
 
@@ -60,13 +69,12 @@ test("c2s_remove", async () => {
 
 test("s2c_remove", async () => {
     const port = testUtil.mockPort();
-    jest.spyOn(chrome.tabs.onRemoved, "addListener")
-        .mockImplementationOnce((fn: (id: number, removeInfo: chrome.tabs.TabRemoveInfo) => void) => {
-        fn(dummyC2SMessage().tabId, { windowId: testUtil.WINDOW_ID, isWindowClosing: false });
-    })
     jest.spyOn(port, "postMessage").mockReturnValue(undefined);
 
     testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    onRemoved(dummyC2SMessage().tabId, { windowId: testUtil.WINDOW_ID, isWindowClosing: false });
 
     await new Promise(process.nextTick);
     expect(port.postMessage).toHaveBeenCalledWith({ message: "remove", tabId: dummyC2SMessage().tabId } satisfies S2CMessage)
@@ -74,13 +82,12 @@ test("s2c_remove", async () => {
 
 test("s2c_remove_wrong_window", async () => {
     const port = testUtil.mockPort();
-    jest.spyOn(chrome.tabs.onRemoved, "addListener")
-        .mockImplementationOnce((fn: (id: number, removeInfo: chrome.tabs.TabRemoveInfo) => void) => {
-        fn(dummyC2SMessage().tabId, { windowId: testUtil.WINDOW_ID + 1, isWindowClosing: false });
-    })
     jest.spyOn(port, "postMessage").mockReturnValue(undefined);
 
     testExports.handleNewConnection(port);
+
+    await new Promise(process.nextTick);
+    onRemoved(dummyC2SMessage().tabId, { windowId: testUtil.WINDOW_ID + 1, isWindowClosing: false });
 
     await new Promise(process.nextTick);
     expect(port.postMessage).not.toHaveBeenCalledWith({ message: "remove", tabId: dummyC2SMessage().tabId } satisfies S2CMessage);
