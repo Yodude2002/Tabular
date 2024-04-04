@@ -32,18 +32,34 @@ chrome.runtime.onConnect.addListener((port) => {
 
 chrome.tabs.onCreated.addListener((t) => {
     const wi = windowStore[`${t.windowId}`];
-    if (wi) { // TODO: update the tabs
+    if (wi) {
+        const newTab = translateTab(t);
+        if (t.openerTabId !== undefined) {
+            const before = wi.tabs.slice(0, t.index);
+            const window = before.slice(before.findLastIndex((e) => e.parentId === -1), before.length);
+            if (validParents(window).indexOf(t.openerTabId) < 0) {
+                newTab.parentId = -1;
+            } else {
+                newTab.parentId = t.openerTabId;
+            }
+        }
+        wi.tabs.splice(t.index, 0, newTab)
         wi.port.postMessage({
             message: "insert",
             globalIndex: t.index,
-            tabInfo: translateTab(t),
+            tabInfo: newTab,
         } satisfies S2CMessage);
     }
 });
 
 chrome.tabs.onRemoved.addListener((id, removeInfo) => {
     const wi = windowStore[`${removeInfo.windowId}`];
-    if (wi) { // TODO: update the tabs
+    if (wi) {
+        const index = wi.tabs.findIndex((t) => t.tabId === id);
+        const [tab] = wi.tabs.splice(index, 1);
+        for (const t of wi.tabs.filter((t) => t.parentId === tab.tabId)) {
+            t.parentId = tab.parentId;
+        }
         wi.port.postMessage({
             message: "remove",
             tabId: id,
@@ -53,10 +69,14 @@ chrome.tabs.onRemoved.addListener((id, removeInfo) => {
 
 chrome.tabs.onUpdated.addListener((id, info, tab) => {
     const wi = windowStore[`${tab.windowId}`];
-    if (wi) { // TODO: update the tabs
+    if (wi) {
+        const ti = wi.tabs.findIndex((t) => t.tabId === id);
+        const t = wi.tabs[ti];
+        wi.tabs[ti] = translateTab(tab);
+        wi.tabs[ti].parentId = t.parentId;
         wi.port.postMessage({
             message: "update",
-            tabInfo: translateTab(tab),
+            tabInfo: wi.tabs[ti],
         } satisfies S2CMessage);
     }
 });
@@ -70,9 +90,9 @@ function handleNewConnection(port: chrome.runtime.Port) {
     tab.then((a1) => {
         const s = a1.map(translateTab);
         assignParents(s, a1);
-        const wi = windowStore[`${windowId}`];
-        if (wi) {
-            wi.tabs = s
+        windowStore[`${windowId}`] = {
+            port: port,
+            tabs: s
         }
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
     });
@@ -91,11 +111,6 @@ function handleNewConnection(port: chrome.runtime.Port) {
     port.onDisconnect.addListener((_p) => {
         delete windowStore[`${windowId}`];
     })
-
-    windowStore[`${windowId}`] = {
-        port: port,
-        tabs: []
-    }
 }
 
 function translateTab(tab: chrome.tabs.Tab): Tab {
@@ -135,6 +150,24 @@ function assignParents(tabs: Tab[], native: chrome.tabs.Tab[]) {
         }
         stack.push(tab.tabId);
     }
+}
+
+function validParents(tabs: Tab[]) {
+    const stack: number[] = [];
+    for (const tab of tabs) {
+        if (tab.parentId === -1) {
+            stack.splice(0, stack.length);
+        } else {
+            const index = stack.indexOf(tab.parentId);
+            if (index < 0) {
+                stack.splice(0, stack.length);
+            } else {
+                stack.splice(index+1, stack.length - index - 1);
+            }
+        }
+        stack.push(tab.tabId)
+    }
+    return stack;
 }
 
 function handleTabSelectMessage(a1: C2STabSelectMessage){

@@ -5,7 +5,8 @@
     "noImplicitAny": true,
     "removeComments": true,
     "alwaysStrict": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": ["es2023", "dom"]
   },
   "include": [
     "background",
