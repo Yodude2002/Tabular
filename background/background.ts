@@ -15,20 +15,17 @@ function handleNewConnection(port: chrome.runtime.Port) {
 
     let tab = chrome.tabs.query({});
     tab.then((a1) => {
-
         let s = new Array<Tab>(a1.length);
         for(let i = 0; i < a1.length; i++) {
                 s[i] = translateTab(a1[i], a1[i]);
             console.log(s[i]);
         }
         port.postMessage({ message: "state", tabs: s } satisfies S2CMessage);
-
     });
 
     port.postMessage({ message: "ack" } as S2CMessage)
 
     port.onMessage.addListener((a1: C2SMessage) => {
-
         if (a1.message == "select") {
             handleTabSelectMessage(a1);
         }
