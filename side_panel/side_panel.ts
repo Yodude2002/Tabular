@@ -17,7 +17,15 @@ declare global {
         switch (message.message) {
             case "state": {
                 for (const tab of message.tabs) {
-                    appendtoContainer(tab);
+                    // experimental 
+                    if(tab.parentId == -1){
+                        appendToContainer(tab);
+                        console.log(tab.parentId);
+                    }
+                    else{ 
+                        appendToParent(tab);
+                        console.log(tab.parentId);
+                    }
                 }
                 break;
             }
@@ -101,9 +109,15 @@ function removeElement(removeId: string){
     const removedTab = document.getElementById(removeId);
     removedTab.remove();
 }
-function appendtoContainer(Names: Tab){
+function appendToContainer(Names: Tab){
     const element = addElement(Names);
     var flexContainer = document.querySelector(".MainContainer");
+    if(flexContainer != null)
+        flexContainer.appendChild(element);
+}
+function appendToParent(currentTabInfo: Tab){
+    const element = addElement(currentTabInfo);
+    var flexContainer = document.getElementById(String(currentTabInfo.parentId));
     if(flexContainer != null)
         flexContainer.appendChild(element);
 }
