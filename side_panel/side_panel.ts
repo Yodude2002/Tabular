@@ -44,6 +44,32 @@ declare global {
     });
 })().catch(console.error);
 
+window.addEventListener("load", (_e) => {
+    const mainContainer = document.querySelector(".MainContainer") as HTMLElement;
+    const context = document.getElementById("context_menu");
+    mainContainer.addEventListener("contextmenu", (mouse) => {
+        mouse.preventDefault();
+        mouse.stopPropagation();
+        context.showPopover();
+        const height = Math.min(mouse.pageY, document.documentElement.clientHeight + document.documentElement.scrollTop - context.clientHeight - 8);
+        let width = mouse.pageX;
+        if (width + context.clientWidth > document.documentElement.clientWidth + document.documentElement.scrollLeft - 8) {
+            width -= context.clientWidth;
+        }
+        context.style.top = `${height}px`;
+        context.style.left = `${width}px`;
+        context.animate([{
+            opacity: 0,
+        },{
+            opacity: 1,
+        }], {
+            duration: 200,
+            fill: "both",
+            easing: "ease-in-out"
+        });
+    })
+})
+
 function addElement(Names: Tab): HTMLElement {
     // Creating newTab with the element of div
     const newTab = document.createElement("div");
