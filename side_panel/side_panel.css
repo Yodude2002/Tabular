@@ -44,3 +44,49 @@ body {
     overflow: hidden;
     cursor: default;
 }
+
+#context_menu {
+    margin: 8px;
+    display: none;
+    flex-direction: column;
+    background-color: #212121;
+    padding: 16px 0;
+    box-shadow: #0000007f 0 3px 16px 0;
+    border-radius: 8px;
+    position: absolute;
+
+    &:popover-open {
+        inset: unset;
+        border: none;
+        display: flex;
+    }
+
+    & button[role="menuitem"] {
+        font-size: 14px;
+        height: 30px;
+        background-color: transparent;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        padding: 0 24px;
+        justify-content: space-between;
+        text-wrap: nowrap;
+    }
+    & button[role="menuitem"]:hover:not(:disabled) {
+        background-color: #333333;
+    }
+    & button[role="menuitem"]:active:not(:disabled) {
+        background-color: #444444;
+    }
+    & button[role="menuitem"]:disabled {
+        opacity: 0.38;
+    }
+    & hr[role="separator"] {
+        height: 1px;
+        background-color: #49454F;
+        width: 100%;
+        border: none;
+    }
+}
