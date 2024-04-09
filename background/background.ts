@@ -57,9 +57,15 @@ chrome.tabs.onRemoved.addListener((id, removeInfo) => {
     if (wi) {
         const index = wi.tabs.findIndex((t) => t.tabId === id);
         const [tab] = wi.tabs.splice(index, 1);
-        for (const t of wi.tabs.filter((t) => t.parentId === tab.tabId)) {
+        wi.tabs.filter((t) => t.parentId === tab.tabId).forEach((t, i) => {
             t.parentId = tab.parentId;
-        }
+            wi.port.postMessage({
+                message: "move",
+                tabId: t.tabId,
+                parentId: t.parentId,
+                globalIndex: index + i + 1,
+            } satisfies S2CMessage)
+        });
         wi.port.postMessage({
             message: "remove",
             tabId: id,
