@@ -30,7 +30,7 @@ declare global {
             case "insert": {
                 //Need to implement global index (probably make a function that uses addElement())
                 insertintoContainer(message.tabInfo, message.globalIndex);
-                
+
                 break;
             }
             case "update":{
@@ -48,11 +48,21 @@ window.addEventListener("load", (_e) => {
     const mainContainer = document.querySelector(".MainContainer") as HTMLElement;
     const context = document.getElementById("context_menu");
     mainContainer.addEventListener("contextmenu", (mouse) => {
+        let target = mouse.target as HTMLElement;
+        while (!target.classList.contains("Tabs")) {
+            if (target.classList.contains("MainContainer")) {
+                return;
+            }
+            target = target.parentElement;
+        }
+        console.log(target);
+
         mouse.preventDefault();
         mouse.stopPropagation();
+
         context.showPopover();
-        const height = Math.min(mouse.pageY, document.documentElement.clientHeight + document.documentElement.scrollTop - context.clientHeight - 8);
-        let width = mouse.pageX;
+        const height = Math.min(mouse.pageY - 8, document.documentElement.clientHeight + document.documentElement.scrollTop - context.clientHeight - 8);
+        let width = mouse.pageX - 8;
         if (width + context.clientWidth > document.documentElement.clientWidth + document.documentElement.scrollLeft - 8) {
             width -= context.clientWidth;
         }
@@ -67,7 +77,10 @@ window.addEventListener("load", (_e) => {
             fill: "both",
             easing: "ease-in-out"
         });
-    })
+    });
+    context.addEventListener("click", (_e) => {
+        context.hidePopover();
+    });
 })
 
 function addElement(Names: Tab): HTMLElement {
@@ -88,7 +101,7 @@ function addElement(Names: Tab): HTMLElement {
     // Setting href attribute for the link
 
     const button = document.createElement("button");
-    
+
     link.src = Names.favicon;
     console.log(Names.favicon);
     const tabContent = document.createTextNode(Names.title);
