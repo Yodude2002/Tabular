@@ -18,14 +18,8 @@ declare global {
             case "state": {
                 for (const tab of message.tabs) {
                     // experimental 
-                    if(tab.parentId == -1){
                         appendToContainer(tab);
                         console.log(tab.parentId);
-                    }
-                    else{ 
-                        appendToParent(tab);
-                        console.log(tab.parentId);
-                    }
                 }
                 break;
             }
@@ -112,18 +106,24 @@ function removeElement(removeId: string){
 function appendToContainer(Names: Tab){
     const element = addElement(Names);
     var flexContainer = document.querySelector(".MainContainer");
+    if (Names.parentId != -1){
+        element.style.marginLeft = "50px";
+    }
     if(flexContainer != null)
         flexContainer.appendChild(element);
 }
-function appendToParent(currentTabInfo: Tab){
+/*function appendToParent(currentTabInfo: Tab){
     const element = addElement(currentTabInfo);
     var flexContainer = document.getElementById(String(currentTabInfo.parentId));
     if(flexContainer != null)
         flexContainer.appendChild(element);
-}
+}*/
 function insertintoContainer(currenttabInfo: Tab, funnyindex: number){
     var replacementElement = addElement(currenttabInfo);
     var stuff = document.querySelector(".MainContainer");
+    if (currenttabInfo.parentId != -1){
+        replacementElement.style.marginLeft = "50px";
+    }
     var beforereplacementElement = stuff.children[funnyindex];
     stuff.insertBefore(replacementElement , beforereplacementElement);
 }
@@ -134,7 +134,4 @@ function updateTab(currenttabInfo: Tab){
     //Refactoring is needed in the future
     randomstuff2.textContent = currenttabInfo.title;
     randomstuff3.src = currenttabInfo.favicon;
-
-
-
 }
