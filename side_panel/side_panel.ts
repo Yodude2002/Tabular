@@ -47,6 +47,8 @@ declare global {
 window.addEventListener("load", (_e) => {
     const mainContainer = document.querySelector(".MainContainer") as HTMLElement;
     const context = document.getElementById("context_menu");
+
+    let currentTab: HTMLElement | null = null;
     mainContainer.addEventListener("contextmenu", (mouse) => {
         let target = mouse.target as HTMLElement;
         while (!target.classList.contains("Tabs")) {
@@ -55,7 +57,7 @@ window.addEventListener("load", (_e) => {
             }
             target = target.parentElement;
         }
-        console.log(target);
+        currentTab = target;
 
         mouse.preventDefault();
         mouse.stopPropagation();
@@ -78,8 +80,37 @@ window.addEventListener("load", (_e) => {
             easing: "ease-in-out"
         });
     });
-    context.addEventListener("click", (_e) => {
+    context.addEventListener("click", (e) => {
         context.hidePopover();
+        if (!(e.target instanceof HTMLButtonElement)) return;
+        if (!currentTab) return;
+        switch (e.target.id) {
+            case "context_new_child": {
+
+            } break;
+            case "context_reload": {
+
+            } break;
+            case "context_duplicate": {
+
+            } break;
+            case "context_pin": {
+
+            } break;
+            case "context_mute": {
+
+            } break;
+            case "context_close": {
+                tabPort.postMessage({
+                    message: "remove",
+                    tabId: Number(currentTab.id),
+                } satisfies C2SMessage);
+            } break;
+            case "context_close_tree": {
+
+            } break;
+        }
+        currentTab = null;
     });
 })
 
