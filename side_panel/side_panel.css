@@ -50,7 +50,7 @@ body {
     display: none;
     flex-direction: column;
     background-color: #212121;
-    padding: 16px 0;
+    padding: 8px 0;
     box-shadow: #0000007f 0 3px 16px 0;
     border-radius: 8px;
     position: absolute;
