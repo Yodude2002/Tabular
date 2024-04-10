@@ -55,7 +55,14 @@ type S2CMoveMessage = {
     globalIndex: number,
 }
 
-export type C2SMessage = C2SConnectMessage | C2STabSelectMessage | C2SRemoveMessage;
+export type C2SMessage = C2SConnectMessage
+    | C2STabSelectMessage
+    | C2SRemoveMessage
+    | C2SReloadMessage
+    | C2SDuplicateMessage
+    | C2SPinMessage
+    | C2SMuteMessage
+    | C2SCloseTreeMessage;
 
 type C2SConnectMessage = {
     message: "connect",
@@ -66,7 +73,35 @@ export type C2STabSelectMessage = {
     message: "select",
     tabId: number,
 }
+
 export type C2SRemoveMessage = {
     message: "remove",
+    tabId: number,
+}
+
+type C2SReloadMessage = {
+    message: "reload",
+    tabId: number,
+}
+
+type C2SDuplicateMessage = {
+    message: "duplicate",
+    tabId: number,
+}
+
+type C2SPinMessage = {
+    message: "pin",
+    tabId: number,
+    pinned: boolean,
+}
+
+type C2SMuteMessage = {
+    message: "mute",
+    tabId: number,
+    muted: boolean,
+}
+
+type C2SCloseTreeMessage = {
+    message: "close_tree",
     tabId: number,
 }

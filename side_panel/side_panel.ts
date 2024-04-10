@@ -84,30 +84,49 @@ window.addEventListener("load", (_e) => {
         context.hidePopover();
         if (!(e.target instanceof HTMLButtonElement)) return;
         if (!currentTab) return;
+
+        const tabId = Number(currentTab.id);
         switch (e.target.id) {
             case "context_new_child": {
 
             } break;
             case "context_reload": {
-
+                tabPort.postMessage({
+                    message: "reload",
+                    tabId: tabId,
+                } satisfies C2SMessage);
             } break;
             case "context_duplicate": {
-
+                tabPort.postMessage({
+                    message: "duplicate",
+                    tabId: tabId,
+                } satisfies C2SMessage);
             } break;
             case "context_pin": {
-
+                tabPort.postMessage({
+                    message: "pin",
+                    tabId: tabId,
+                    pinned: true,
+                } satisfies C2SMessage);
             } break;
             case "context_mute": {
-
+                tabPort.postMessage({
+                    message: "mute",
+                    tabId: tabId,
+                    muted: true,
+                } satisfies C2SMessage);
             } break;
             case "context_close": {
                 tabPort.postMessage({
                     message: "remove",
-                    tabId: Number(currentTab.id),
+                    tabId: tabId,
                 } satisfies C2SMessage);
             } break;
             case "context_close_tree": {
-
+                tabPort.postMessage({
+                    message: "close_tree",
+                    tabId: tabId,
+                } satisfies C2SMessage);
             } break;
         }
         currentTab = null;
