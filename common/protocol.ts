@@ -79,29 +79,29 @@ export type C2SRemoveMessage = {
     tabId: number,
 }
 
-type C2SReloadMessage = {
+export type C2SReloadMessage = {
     message: "reload",
     tabId: number,
 }
 
-type C2SDuplicateMessage = {
+export type C2SDuplicateMessage = {
     message: "duplicate",
     tabId: number,
 }
 
-type C2SPinMessage = {
+export type C2SPinMessage = {
     message: "pin",
     tabId: number,
     pinned: boolean,
 }
 
-type C2SMuteMessage = {
+export type C2SMuteMessage = {
     message: "mute",
     tabId: number,
     muted: boolean,
 }
 
-type C2SCloseTreeMessage = {
+export type C2SCloseTreeMessage = {
     message: "close_tree",
     tabId: number,
 }

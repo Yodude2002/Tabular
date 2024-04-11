@@ -3,7 +3,7 @@ import {
     C2SMessage,
     C2STabSelectMessage,
     Tab,
-    C2SRemoveMessage
+    C2SRemoveMessage, C2SReloadMessage, C2SDuplicateMessage, C2SPinMessage, C2SMuteMessage, C2SCloseTreeMessage
 } from "../common/protocol";
 
 type WindowInfo = {
@@ -112,6 +112,21 @@ function handleNewConnection(port: chrome.runtime.Port) {
             case "remove":
                 handleTabRemoveMessage(a1);
                 break;
+            case "reload":
+                handleReloadMessage(a1);
+                break;
+            case "duplicate":
+                handleDuplicateMessage(a1);
+                break;
+            case "pin":
+                handlePinMessage(a1);
+                break;
+            case "mute":
+                handleMuteMessage(a1);
+                break;
+            case "close_tree":
+                handleCloseTreeMessage(a1);
+                break;
         }
     });
     port.onDisconnect.addListener((_p) => {
@@ -187,6 +202,29 @@ function handleTabSelectMessage(a1: C2STabSelectMessage){
 function handleTabRemoveMessage(a1: C2SRemoveMessage) {
     chrome.tabs.remove(a1.tabId).catch(console.error);
 }
+
+function handleReloadMessage(a1: C2SReloadMessage) {
+    chrome.tabs.reload(a1.tabId).catch(console.error);
+}
+
+function handleDuplicateMessage(a1: C2SDuplicateMessage) {
+    chrome.tabs.duplicate(a1.tabId).catch(console.error);
+}
+
+function handlePinMessage(a1: C2SPinMessage) {
+    console.warn(`Pin message for tab ${a1.tabId}; not implemented`);
+}
+
+function handleMuteMessage(a1: C2SMuteMessage) {
+    chrome.tabs.update(a1.tabId, {
+        muted: a1.muted
+    }).catch(console.error)
+}
+
+function handleCloseTreeMessage(a1: C2SCloseTreeMessage) {
+    console.warn(`Close Tree message for tab ${a1.tabId}; not implemented`);
+}
+
 
 export const testExports = {
     handleNewConnection: handleNewConnection,
