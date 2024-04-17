@@ -81,7 +81,7 @@ function addElement(Names: Tab): HTMLElement {
 
     // Get the main container element
     newTab.style.cursor = "pointer";
-    //const mainContainer = document.querySelector(".MainContainer");
+    // const mainContainer = document.querySelector(".MainContainer"); This selects main container
     // Append newTab to the main container
     newTab.addEventListener('click', (_e) => {
         tabPort.postMessage({
@@ -105,13 +105,28 @@ function removeElement(removeId: string){
 }
 function appendToContainer(Names: Tab){
     const element = addElement(Names);
+    var futureparent = document.getElementById(String(Names.parentId));
     var flexContainer = document.querySelector(".MainContainer");
+    // LOL
+    //Handles children tabs, aims to increment marginLeft by marginsize
+    const marginsize = 50;
     if (Names.parentId != -1){
-        element.style.marginLeft = "50px";
+        var presize = (futureparent.style.marginLeft);
+        if(presize == ""){
+            element.style.marginLeft = marginsize + "px";
+        }else{
+            // takes the string of marginleft and converts to a number
+            presize = presize.replace("px", "");
+            var newsize = Number(presize) + marginsize;
+            element.style.marginLeft = newsize + "px";
+        }
     }
+    //Handles children tab above
+    //Appends children to mainContainer, and under parent
     if(flexContainer != null)
         flexContainer.appendChild(element);
 }
+// Past experimental function
 /*function appendToParent(currentTabInfo: Tab){
     const element = addElement(currentTabInfo);
     var flexContainer = document.getElementById(String(currentTabInfo.parentId));
@@ -120,10 +135,22 @@ function appendToContainer(Names: Tab){
 }*/
 function insertintoContainer(currenttabInfo: Tab, funnyindex: number){
     var replacementElement = addElement(currenttabInfo);
+    var futureparent = document.getElementById(String(currenttabInfo.parentId));
     var stuff = document.querySelector(".MainContainer");
+    //Handles children tabs, aims to increment marginLeft by marginsize
+    const marginsize = 50;
     if (currenttabInfo.parentId != -1){
-        replacementElement.style.marginLeft = "50px";
+        var presize = (futureparent.style.marginLeft);
+        if(presize == ""){
+            replacementElement.style.marginLeft = marginsize + "px";
+        }else{
+            // takes the string of marginleft and converts to a number
+            presize = presize.replace("px", "");
+            var newsize = Number(presize) + marginsize;
+            replacementElement.style.marginLeft = newsize + "px";
+        }
     }
+    //  stuff
     var beforereplacementElement = stuff.children[funnyindex];
     stuff.insertBefore(replacementElement , beforereplacementElement);
 }
