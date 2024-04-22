@@ -62,7 +62,8 @@ export type C2SMessage = C2SConnectMessage
     | C2SDuplicateMessage
     | C2SPinMessage
     | C2SMuteMessage
-    | C2SCloseTreeMessage;
+    | C2SCloseTreeMessage
+    | C2SCreateTabMessage;
 
 type C2SConnectMessage = {
     message: "connect",
@@ -104,4 +105,11 @@ export type C2SMuteMessage = {
 export type C2SCloseTreeMessage = {
     message: "close_tree",
     tabId: number,
+}
+
+export type C2SCreateTabMessage = {
+    message: "create",
+    globalIndex: number,
+    parentId: number,
+    url?: string
 }

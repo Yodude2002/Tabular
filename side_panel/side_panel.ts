@@ -88,7 +88,14 @@ window.addEventListener("load", (_e) => {
         const tabId = Number(currentTab.id);
         switch (e.target.id) {
             case "context_new_child": {
-
+                const container = document.querySelector(".MainContainer") as HTMLElement;
+                const index = Array.from(container.children).findIndex(el => el.id === `${tabId}`);
+                tabPort.postMessage({
+                    message: "create",
+                    globalIndex: index + 1,
+                    parentId: tabId,
+                    url: undefined,
+                } satisfies C2SMessage);
             } break;
             case "context_reload": {
                 tabPort.postMessage({
