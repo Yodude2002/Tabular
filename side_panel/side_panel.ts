@@ -205,7 +205,7 @@ function appendToContainer(Names: Tab){
     var flexContainer = document.querySelector(".MainContainer");
     // LOL
     //Handles children tabs, aims to increment marginLeft by marginsize
-    const marginsize = 50;
+    const marginsize = 24;
     if (Names.parentId != -1){
         var presize = (futureparent.style.marginLeft);
         if(presize == ""){
@@ -234,7 +234,7 @@ function insertintoContainer(currenttabInfo: Tab, funnyindex: number){
     var futureparent = document.getElementById(String(currenttabInfo.parentId));
     var stuff = document.querySelector(".MainContainer");
     //Handles children tabs, aims to increment marginLeft by marginsize
-    const marginsize = 50;
+    const marginsize = 24;
     if (currenttabInfo.parentId != -1){
         var presize = (futureparent.style.marginLeft);
         if(presize == ""){
