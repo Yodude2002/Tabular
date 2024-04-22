@@ -3,7 +3,13 @@ import {
     C2SMessage,
     C2STabSelectMessage,
     Tab,
-    C2SRemoveMessage, C2SReloadMessage, C2SDuplicateMessage, C2SPinMessage, C2SMuteMessage, C2SCloseTreeMessage
+    C2SRemoveMessage,
+    C2SReloadMessage,
+    C2SDuplicateMessage,
+    C2SPinMessage,
+    C2SMuteMessage,
+    C2SCloseTreeMessage,
+    C2SCreateTabMessage
 } from "../common/protocol";
 
 type WindowInfo = {
@@ -15,6 +21,9 @@ declare global {
     var windowStore: {
         [key in `${number}`]?: WindowInfo
     };
+}
+if (!globalThis.windowStore) {
+    globalThis.windowStore = {};
 }
 
 chrome.runtime.onInstalled.addListener((_details) => {
@@ -104,7 +113,6 @@ function handleNewConnection(port: chrome.runtime.Port) {
     });
 
     port.onMessage.addListener((a1: C2SMessage) => {
-
         switch (a1.message) {
             case "select":
                 handleTabSelectMessage(a1);
@@ -125,7 +133,10 @@ function handleNewConnection(port: chrome.runtime.Port) {
                 handleMuteMessage(a1);
                 break;
             case "close_tree":
-                handleCloseTreeMessage(a1);
+                handleCloseTreeMessage(a1, windowId);
+                break;
+            case "create":
+                handleCreateTabMessage(a1, windowId);
                 break;
         }
     });
@@ -221,8 +232,38 @@ function handleMuteMessage(a1: C2SMuteMessage) {
     }).catch(console.error)
 }
 
-function handleCloseTreeMessage(a1: C2SCloseTreeMessage) {
-    console.warn(`Close Tree message for tab ${a1.tabId}; not implemented`);
+function handleCloseTreeMessage(a1: C2SCloseTreeMessage, windowId: number) {
+    const ws = globalThis.windowStore[`${windowId}`];
+    if (!ws) return;
+    const tabs = ws.tabs;
+
+    const firstIndex = tabs.findIndex(tab => tab.tabId === a1.tabId);
+    if (firstIndex < 0) return;
+
+    const scanned = [tabs[firstIndex].tabId];
+
+    let lastIndex = firstIndex + 1;
+    for (; lastIndex < tabs.length; lastIndex++) {
+        const tab = tabs[lastIndex];
+        if (scanned.includes(tab.parentId)) {
+            scanned.push(tab.tabId);
+        } else {
+            break;
+        }
+    }
+    for (const tab of tabs.slice(firstIndex, lastIndex).toReversed()) {
+        chrome.tabs.remove(tab.tabId).catch(console.error);
+    }
+}
+
+function handleCreateTabMessage(a1: C2SCreateTabMessage, windowId: number) {
+    chrome.tabs.create({
+        url: a1.url,
+        index: a1.globalIndex,
+        openerTabId: a1.parentId,
+        windowId: windowId,
+        active: false,
+    }).catch(console.error);
 }
 
 
