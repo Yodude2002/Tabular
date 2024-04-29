@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "minimum_chrome_version": "114",
   "permissions": [
-    "sidePanel", "tabs"
+    "sidePanel",
+    "tabs",
+    "commands"
   ],
   "background": {
     "service_worker": "background/background.js",
@@ -12,5 +14,14 @@
   },
   "side_panel": {
     "default_path": "side_panel/side_panel.html"
+  },
+  "action": {
+    "default_title": "Tabular"
+  },
+  "commands": {
+    "side_panel": {
+      "suggested_key": "Alt+P",
+      "description": "Toggles the Tabular menu in the Side Panel"
+    }
   }
 }

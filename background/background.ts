@@ -39,6 +39,21 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 })
 
+chrome.action.onClicked.addListener((tab) => {
+    chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
+})
+
+chrome.commands.onCommand.addListener((command, tab) => {
+    switch (command) {
+        case "side_panel": {
+            chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
+        } break;
+        default: {
+            throw new Error("Assertion failed: unrecognized command");
+        }
+    }
+})
+
 chrome.tabs.onCreated.addListener((t) => {
     const wi = windowStore[`${t.windowId}`];
     if (wi) {
